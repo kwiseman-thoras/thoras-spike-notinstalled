@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cart-worker
+  namespace: notinstalled
+spec:
+  replicas: 2
+  selector:
+    matchLabels: {app: cart-worker}
+  template:
+    metadata:
+      labels: {app: cart-worker}
+    spec:
+      containers:
+      - name: worker
+        image: registry.k8s.io/pause:3.10
+        resources:
+          requests: {cpu: 10m, memory: 16Mi}
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: cart-worker
+  namespace: notinstalled
+spec:
+  minAvailable: 2
+  selector:
+    matchLabels: {app: cart-worker}
